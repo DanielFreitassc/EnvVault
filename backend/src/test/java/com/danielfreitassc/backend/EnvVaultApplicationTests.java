@@ -1,4 +1,4 @@
-package com.danielfreitassc.env_vault;
+package com.danielfreitassc.backend;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

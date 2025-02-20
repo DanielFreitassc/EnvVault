@@ -1,4 +1,4 @@
-package com.danielfreitassc.env_vault.utils;
+package com.danielfreitassc.backend.utils;
 
 import java.util.Arrays;
 import java.util.HashSet;

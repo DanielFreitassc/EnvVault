@@ -1,4 +1,4 @@
-package com.danielfreitassc.env_vault.dtos;
+package com.danielfreitassc.backend.dtos;
 
 public record EnvResponseDto(
     String name

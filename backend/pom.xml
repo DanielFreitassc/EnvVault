@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.danielfreitassc</groupId>
-	<artifactId>env_vault</artifactId>
+	<artifactId>backend</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>env_vault</name>
+	<name>backend</name>
 	<description>Demo project for Spring Boot</description>
 	<url/>
 	<licenses>

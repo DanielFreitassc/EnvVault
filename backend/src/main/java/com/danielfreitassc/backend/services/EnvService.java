@@ -1,4 +1,4 @@
-package com.danielfreitassc.env_vault.services;
+package com.danielfreitassc.backend.services;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -10,10 +10,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.danielfreitassc.env_vault.dtos.EnvRequestDto;
-import com.danielfreitassc.env_vault.dtos.EnvResponseDto;
-import com.danielfreitassc.env_vault.dtos.MessageResponseDto;
-import com.danielfreitassc.env_vault.utils.ForbiddenWordsFilter;
+import com.danielfreitassc.backend.dtos.EnvRequestDto;
+import com.danielfreitassc.backend.dtos.EnvResponseDto;
+import com.danielfreitassc.backend.dtos.MessageResponseDto;
+import com.danielfreitassc.backend.utils.ForbiddenWordsFilter;
 
 
 @Service
@@ -27,7 +27,7 @@ public class EnvService {
 
     public MessageResponseDto addEnv(EnvRequestDto envRequestDto) {
         if (envCache.containsKey(envRequestDto.name())) {
-            return new MessageResponseDto("Erro: A variável de ambiente " + envRequestDto.name() + " já existe.");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Erro: A variável de ambiente " + envRequestDto.name() + " já existe.");
         }
 
         if (ForbiddenWordsFilter.containsForbiddenWords(envRequestDto.name())) {

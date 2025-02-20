@@ -1,4 +1,4 @@
-package com.danielfreitassc.env_vault.dtos;
+package com.danielfreitassc.backend.dtos;
 
 import jakarta.validation.constraints.NotBlank;
 
