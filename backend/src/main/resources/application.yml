@@ -2,6 +2,14 @@ spring:
     application:
         name: backend
     datasource:
-        url: jdbc:h2:mem:/api
+        url: jdbc:h2:file:./src/main/resources/data/api;AUTO_SERVER=TRUE
         username: ${ENV_VAULT_USER:admin}
         password: ${ENV_VAULT_PASS:admin}
+    jpa:
+     hibernate:
+        ddl-auto: update
+
+api:
+ security:
+    token:
+        secret: ${JTW_VAULT_SECRET:my-secret-key}
