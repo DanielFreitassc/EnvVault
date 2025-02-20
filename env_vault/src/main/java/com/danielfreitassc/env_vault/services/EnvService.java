@@ -1,0 +1,87 @@
+package com.danielfreitassc.env_vault.services;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
+import com.danielfreitassc.env_vault.dtos.EnvRequestDto;
+import com.danielfreitassc.env_vault.dtos.EnvResponseDto;
+import com.danielfreitassc.env_vault.dtos.MessageResponseDto;
+import com.danielfreitassc.env_vault.utils.ForbiddenWordsFilter;
+
+
+@Service
+public class EnvService {
+    private Map<String, String> envCache = new HashMap<>(System.getenv());
+
+    public List<EnvResponseDto> getEnvs() {
+        return envCache.keySet().stream().map(EnvResponseDto::new).collect(Collectors.toList());
+    }
+
+
+    public MessageResponseDto addEnv(EnvRequestDto envRequestDto) {
+        if (envCache.containsKey(envRequestDto.name())) {
+            return new MessageResponseDto("Erro: A variável de ambiente " + envRequestDto.name() + " já existe.");
+        }
+
+        if (ForbiddenWordsFilter.containsForbiddenWords(envRequestDto.name())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Erro: O nome da variável '" + envRequestDto.name() + "' é proibido, pois é utilizado pelo sistema operacional.");
+        }
+    
+        try {
+            ProcessBuilder processBuilder = new ProcessBuilder("setx", envRequestDto.name(), envRequestDto.value());
+            Process process = processBuilder.start();
+            process.waitFor();
+    
+            envCache.put(envRequestDto.name(), envRequestDto.value());
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+            return new MessageResponseDto("Erro ao adicionar a variável de ambiente: " + e.getMessage());
+        }
+    
+        return new MessageResponseDto("Variável de ambiente: " + envRequestDto.name() + " adicionada.");
+    }
+
+    public MessageResponseDto updateEnv(EnvRequestDto envRequestDto) {
+        if (ForbiddenWordsFilter.containsForbiddenWords(envRequestDto.name())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Erro: O nome da variável '" + envRequestDto.name() + "' é proibido, pois é utilizado pelo sistema operacional.");
+        }
+
+        try {
+            ProcessBuilder processBuilder = new ProcessBuilder("setx", envRequestDto.name(), envRequestDto.value());
+            Process process = processBuilder.start();
+            process.waitFor();
+
+            envCache.put(envRequestDto.name(), envRequestDto.value());
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+            return new MessageResponseDto("Erro ao adicionar a variável de ambiente: " + e.getMessage());
+        }
+
+        return new MessageResponseDto("Variável atualizada com sucesso");
+    }
+
+    public MessageResponseDto deleteEnv(String name) {
+        if (ForbiddenWordsFilter.containsForbiddenWords(name)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Erro: O nome da variável '" + name + "' é proibido, pois é utilizado pelo sistema operacional.");
+        }
+
+        try {
+            ProcessBuilder processBuilder = new ProcessBuilder("cmd", "/c", "reg", "delete", "HKEY_CURRENT_USER\\Environment", "/F", "/v", name);
+            Process process = processBuilder.start();
+            process.waitFor();
+    
+            envCache.remove(name);
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        return new MessageResponseDto("Variável de ambiente: " + name + " Removida");
+    }
+}

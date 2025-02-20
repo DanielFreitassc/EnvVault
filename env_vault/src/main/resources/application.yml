@@ -1,0 +1,7 @@
+spring:
+    application:
+        name: env_vault
+    datasource:
+        url: jdbc:h2:mem:/api
+        username: ${ENV_VAULT_USER:admin}
+        password: ${ENV_VAULT_PASS:admin}
