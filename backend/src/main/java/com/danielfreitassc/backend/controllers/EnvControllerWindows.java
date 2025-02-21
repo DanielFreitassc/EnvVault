@@ -16,35 +16,35 @@ import org.springframework.web.bind.annotation.RestController;
 import com.danielfreitassc.backend.dtos.EnvRequestDto;
 import com.danielfreitassc.backend.dtos.EnvResponseDto;
 import com.danielfreitassc.backend.dtos.MessageResponseDto;
-import com.danielfreitassc.backend.services.EnvService;
+import com.danielfreitassc.backend.services.EnvServiceWindows;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/env")
+@RequestMapping("/env-windows")
 @RequiredArgsConstructor
-public class EnvController {
-    private final EnvService envService;
+public class EnvControllerWindows {
+    private final EnvServiceWindows envServiceWindows;
 
     @GetMapping
     public List<EnvResponseDto> getEnvs() {
-        return envService.getEnvs();
+        return envServiceWindows.getEnvs();
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public MessageResponseDto addEnv(@RequestBody @Valid EnvRequestDto envRequestDto) {
-        return envService.addEnv(envRequestDto);
+        return envServiceWindows.addEnv(envRequestDto);
     }
 
     @DeleteMapping("/{name}")
     public MessageResponseDto deleteEnv(@PathVariable String name) {
-        return envService.deleteEnv(name);
+        return envServiceWindows.deleteEnv(name);
     }
 
     @PutMapping
     public MessageResponseDto updateEnv(@RequestBody @Valid EnvRequestDto envRequestDto) {
-        return envService.updateEnv(envRequestDto);
+        return envServiceWindows.updateEnv(envRequestDto);
     }
 }

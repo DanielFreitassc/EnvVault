@@ -13,16 +13,16 @@ import org.springframework.web.server.ResponseStatusException;
 import com.danielfreitassc.backend.dtos.EnvRequestDto;
 import com.danielfreitassc.backend.dtos.EnvResponseDto;
 import com.danielfreitassc.backend.dtos.MessageResponseDto;
-import com.danielfreitassc.backend.utils.ForbiddenWordsFilter;
+import com.danielfreitassc.backend.utils.ForbiddenWordsFilterWindows;
 
 
 @Service
-public class EnvService {
+public class EnvServiceWindows {
     private Map<String, String> envCache = new HashMap<>(System.getenv());
 
     public List<EnvResponseDto> getEnvs() {
         return envCache.keySet().stream()
-            .filter(key -> !ForbiddenWordsFilter.containsForbiddenWords(key))
+            .filter(key -> !ForbiddenWordsFilterWindows.containsForbiddenWords(key))
             .map(EnvResponseDto::new)
             .collect(Collectors.toList());
     }
@@ -32,7 +32,7 @@ public class EnvService {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Erro: A variável de ambiente " + envRequestDto.name() + " já existe.");
         }
 
-        if (ForbiddenWordsFilter.containsForbiddenWords(envRequestDto.name())) {
+        if (ForbiddenWordsFilterWindows.containsForbiddenWords(envRequestDto.name())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Erro: O nome da variável '" + envRequestDto.name() + "' é proibido, pois é utilizado pelo sistema operacional.");
         }
     
@@ -51,7 +51,7 @@ public class EnvService {
     }
 
     public MessageResponseDto updateEnv(EnvRequestDto envRequestDto) {
-        if (ForbiddenWordsFilter.containsForbiddenWords(envRequestDto.name())) {
+        if (ForbiddenWordsFilterWindows.containsForbiddenWords(envRequestDto.name())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Erro: O nome da variável '" + envRequestDto.name() + "' é proibido, pois é utilizado pelo sistema operacional.");
         }
 
@@ -70,7 +70,7 @@ public class EnvService {
     }
 
     public MessageResponseDto deleteEnv(String name) {
-        if (ForbiddenWordsFilter.containsForbiddenWords(name)) {
+        if (ForbiddenWordsFilterWindows.containsForbiddenWords(name)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Erro: O nome da variável '" + name + "' é proibido, pois é utilizado pelo sistema operacional.");
         }
 

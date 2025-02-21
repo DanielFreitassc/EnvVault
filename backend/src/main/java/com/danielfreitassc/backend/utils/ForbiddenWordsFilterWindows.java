@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class ForbiddenWordsFilter {
+public class ForbiddenWordsFilterWindows {
     private static final Set<String> FORBIDDEN_WORDS = new HashSet<>(Arrays.asList(
         "ALLUSERSPROFILE", "APPDATA", "COMMONPROGRAMFILES", "COMMONPROGRAMFILES(X86)", 
         "COMMONPROGRAMW6432", "COMPUTERNAME", "COMSPEC", "DRIVERDATA", "HOMEDRIVE", 

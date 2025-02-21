@@ -27,7 +27,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final UserQueryRepositoy userQueryRepositoy;
-    private final EnvService envService;
+    private final EnvServiceWindows envServiceWindows;
 
     public ResponseEntity<MessageResponseDto> create(UserRequestDto userRequestDto) {
         if(userRepository.findByUsername(userRequestDto.username()) != null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Usuário já cadatrado.");
@@ -60,7 +60,7 @@ public class UserService {
         }
         if (userRequestDto.username() != null && !userRequestDto.username().isBlank()) {
             userEntity.setUsername(userRequestDto.username());
-            envService.updateEnv(new EnvRequestDto("ENV_VAULT_USER", userRequestDto.username()));
+            envServiceWindows.updateEnv(new EnvRequestDto("ENV_VAULT_USER", userRequestDto.username()));
         }
         if (userRequestDto.role() != null) {
             userEntity.setRole(userRequestDto.role());
@@ -68,7 +68,7 @@ public class UserService {
         if (userRequestDto.password() != null && !userRequestDto.password().isBlank()) {
             String encryptedPassword = new BCryptPasswordEncoder().encode(userRequestDto.password());
             userEntity.setPassword(encryptedPassword);
-            envService.updateEnv(new EnvRequestDto("ENV_VAULT_PASS", encryptedPassword));
+            envServiceWindows.updateEnv(new EnvRequestDto("ENV_VAULT_PASS", encryptedPassword));
         }
         userRepository.save(userEntity);
         return ResponseEntity.status(HttpStatus.OK).body(new MessageResponseDto("Usuário atualizado com sucesso."));
