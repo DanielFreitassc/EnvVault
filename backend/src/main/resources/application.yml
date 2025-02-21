@@ -2,7 +2,7 @@ spring:
     application:
         name: backend
     datasource:
-        url: jdbc:h2:file:./src/main/resources/data/api;AUTO_SERVER=TRUE
+        url: jdbc:h2:file:./database/api;AUTO_SERVER=TRUE
         username: ${ENV_VAULT_USER:admin}
         password: ${ENV_VAULT_PASS:admin}
     jpa:
