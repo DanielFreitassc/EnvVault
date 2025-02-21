@@ -1,18 +1,15 @@
 package com.danielfreitassc.backend.services;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.danielfreitassc.backend.dtos.AuthenticationDTO;
 import com.danielfreitassc.backend.dtos.LoginResponseDTO;
-import com.danielfreitassc.backend.dtos.MessageResponseDto;
 import com.danielfreitassc.backend.infra.security.TokenService;
 import com.danielfreitassc.backend.models.UserEntity;
 import com.danielfreitassc.backend.repositories.UserRepository;

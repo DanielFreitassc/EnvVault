@@ -21,9 +21,11 @@ public class EnvService {
     private Map<String, String> envCache = new HashMap<>(System.getenv());
 
     public List<EnvResponseDto> getEnvs() {
-        return envCache.keySet().stream().map(EnvResponseDto::new).collect(Collectors.toList());
+        return envCache.keySet().stream()
+            .filter(key -> !ForbiddenWordsFilter.containsForbiddenWords(key))
+            .map(EnvResponseDto::new)
+            .collect(Collectors.toList());
     }
-
 
     public MessageResponseDto addEnv(EnvRequestDto envRequestDto) {
         if (envCache.containsKey(envRequestDto.name())) {
