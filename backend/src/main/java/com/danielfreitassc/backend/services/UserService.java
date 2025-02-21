@@ -73,11 +73,6 @@ public class UserService {
         userRepository.save(userEntity);
         return ResponseEntity.status(HttpStatus.OK).body(new MessageResponseDto("Usuário atualizado com sucesso."));
     }
-
-    public ResponseEntity<MessageResponseDto> delete(UUID id) {
-        userRepository.delete(checkUserId(id));
-        return ResponseEntity.status(HttpStatus.OK).body(new MessageResponseDto("Usuário removido com sucesso."));
-    }
     
     private UserEntity checkUserId(UUID id) {
         Optional<UserEntity> user = userQueryRepositoy.findById(id);

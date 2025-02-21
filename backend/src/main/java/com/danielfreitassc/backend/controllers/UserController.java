@@ -40,9 +40,4 @@ public class UserController {
     public ResponseEntity<MessageResponseDto> patchUser(@PathVariable UUID id, @RequestBody @Valid UserRequestDto userDTO) {
         return userService.patchUser(id, userDTO);
     }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<MessageResponseDto>  deleteUser(@PathVariable UUID id) {
-        return userService.delete(id);
-    }
 }
