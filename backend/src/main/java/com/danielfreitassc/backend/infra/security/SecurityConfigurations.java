@@ -28,11 +28,9 @@ public class SecurityConfigurations {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
 
-                .requestMatchers(HttpMethod.POST,"/user").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.GET,"/user").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.GET,"/user/{id}").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.PATCH,"/user/{id}").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.DELETE,"/user/{id}").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.GET,"/users").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.GET,"/users/{id}").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PATCH,"/users/{id}").hasRole("ADMIN")
                 
                 .requestMatchers(HttpMethod.POST,"/env").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.GET,"/env").hasRole("ADMIN")
@@ -44,7 +42,7 @@ public class SecurityConfigurations {
 
                 // Configuração para endpoint de erro
                 .requestMatchers("/error").anonymous()
-                .anyRequest().authenticated()
+                .anyRequest().denyAll()
 
                 ).addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class).build();
     }
