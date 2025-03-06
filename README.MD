@@ -198,4 +198,3 @@ Status: 200 OK
     "message": "Variável atualizada com sucesso"
 }
 ```
-
