@@ -36,10 +36,15 @@ public class SecurityConfigurations {
                 .requestMatchers(HttpMethod.GET,"/users/{id}").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.PATCH,"/users/{id}").hasRole("ADMIN")
                 
-                .requestMatchers(HttpMethod.POST,"/env").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.GET,"/env").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.PUT,"/env").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.DELETE,"/env").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.POST,"/env-windows").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.GET,"/env-windows").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PUT,"/env-windows").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE,"/env-windows").hasRole("ADMIN")
+
+                .requestMatchers(HttpMethod.POST,"/env-linux").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.GET,"/env-linux").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PUT,"/env-linux").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE,"/env-linux").hasRole("ADMIN")
                 
                 .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                 .requestMatchers(HttpMethod.GET,"/validation").permitAll()
@@ -56,7 +61,11 @@ public class SecurityConfigurations {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowCredentials(true);
         configuration.addAllowedOrigin("http://localhost:3000");
-        configuration.addAllowedMethod("*");
+        configuration.addAllowedMethod(HttpMethod.POST);
+        configuration.addAllowedMethod(HttpMethod.GET);
+        configuration.addAllowedMethod(HttpMethod.PUT);
+        configuration.addAllowedMethod(HttpMethod.PATCH);
+        configuration.addAllowedMethod(HttpMethod.DELETE);
         configuration.addAllowedHeader("*"); 
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
