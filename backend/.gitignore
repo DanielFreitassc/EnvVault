@@ -33,4 +33,3 @@ build/
 .vscode/
 
 ### Database h2 ####
-*.sql
