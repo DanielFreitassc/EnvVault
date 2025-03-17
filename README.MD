@@ -113,7 +113,7 @@ Status: 200 OK
 ```
 
 ### Remover Variável
-**Endpoint:** `DELETE /env-windows/ENV_VAULT_USER`
+**Endpoint:** `DELETE /env-windows/{ENV_NAME_EXAMPLE}`
 
 **Response:**
 ```json
@@ -178,7 +178,7 @@ Status: 200 OK
 ```
 
 ### Remover Variável
-**Endpoint:** `DELETE /env-linux/ENV_VAULT_USER`
+**Endpoint:** `DELETE /env-linux/{ENV_NAME_EXAMPLE}`
 
 **Response:**
 ```json
