@@ -21,24 +21,36 @@ import lombok.RequiredArgsConstructor;
 public class SecurityFilter extends OncePerRequestFilter {
     private final TokenService tokenService;
     private final UserRepository userRepository;
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-            throws ServletException, IOException { 
-                var token = this.recoverToken(request);   
-                if(token != null) {
-                    var username = tokenService.validateToken(token);
-                    UserDetails user = userRepository.findByUsername(username);
+            throws ServletException, IOException {
+        try {
+            var token = this.recoverToken(request);
+            if (token == null) {
+                // Se o token for nulo, chame o CustomAuthenticationEntryPoint
+                customAuthenticationEntryPoint.commence(request, response, null);
+                return;
+            }
 
-                    var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
-                }
-                filterChain.doFilter(request, response);
+            var username = tokenService.validateToken(token);
+            UserDetails user = userRepository.findByUsername(username);
+
+            if (user != null) {
+                var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
+
+            filterChain.doFilter(request, response);
+        } catch (Exception ex) {
+            // Encaminha a exceção para o CustomAuthenticationEntryPoint
+            customAuthenticationEntryPoint.commence(request, response, null);
+        }
     }
-    
     private String recoverToken(HttpServletRequest request) {
         var authHeader = request.getHeader("Authorization");
-        if(authHeader == null) return null;
+        if (authHeader == null) return null;
         return authHeader.replace("Bearer ", "");
     }
 }
