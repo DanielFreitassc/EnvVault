@@ -42,7 +42,15 @@ Status: 200 OK
 ## Gerenciamento de Usuários
 
 ### Atualizar Usuário
-**Endpoint:** `PATCH /user/{id}`
+**Endpoint:** `PATCH /user`
+
+**Payload esperado:**
+```json
+{
+    "username": "admin",
+    "password": "SenhaAtualizada"
+}
+```
 
 **Response:**
 ```json
