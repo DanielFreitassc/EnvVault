@@ -60,21 +60,21 @@ Status: 200 OK
 }
 ```
 
-### Listar Usuários
+### Ver usuário cadastrado
 **Endpoint:** `GET /users`
 
 **Response:**
 ```json
 Status: 200 OK
-[
-    {
-        "id": "30e21fdb-788b-494f-bfa3-b8836a9f6a06",
-        "name": "Admin",
-        "username": "admin",
-        "role": "ADMIN",
-        "createdAt": "20/02/2025"
-    }
-]
+
+{
+    "id": "30e21fdb-788b-494f-bfa3-b8836a9f6a06",
+    "name": "Admin",
+    "username": "admin",
+    "role": "ADMIN",
+    "createdAt": "20/02/2025"
+}
+
 ```
 
 ---
