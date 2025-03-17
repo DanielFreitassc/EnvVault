@@ -34,7 +34,7 @@ public class SecurityConfigurations {
 
                 .requestMatchers(HttpMethod.GET,"/users").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.GET,"/users/{id}").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.PATCH,"/users/{id}").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PATCH,"/users").hasRole("ADMIN")
                 
                 .requestMatchers(HttpMethod.POST,"/env-windows").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.GET,"/env-windows").hasRole("ADMIN")

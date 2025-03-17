@@ -1,6 +1,5 @@
 package com.danielfreitassc.backend.services;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -38,8 +37,8 @@ public class UserService {
         return ResponseEntity.status(HttpStatus.CREATED).body(new MessageResponseDto("Usuário criado com sucesso."));
     }
 
-    public List<UserResponseDTO> getAll() {
-        return userRepository.findAll().stream().map(userMapper::toResponseDto).toList();
+    public UserResponseDTO getUser() {
+        return userMapper.toResponseDto(findFirstUserOrThrow());
     }
 
     public UserResponseDTO getById(UUID id) {
@@ -52,8 +51,8 @@ public class UserService {
         return userMapper.toResponseDto(user.get());
     }
 
-    public ResponseEntity<MessageResponseDto> patchUser(UUID id,  UserRequestDto userRequestDto) {
-        UserEntity userEntity = checkUserId(id);
+    public ResponseEntity<MessageResponseDto> patchUser(UserRequestDto userRequestDto) {
+        UserEntity userEntity = findFirstUserOrThrow();
         
         if (userRequestDto.name() != null && !userRequestDto.name().isBlank()) {
             userEntity.setName(userRequestDto.name());
@@ -68,8 +67,8 @@ public class UserService {
         if (userRequestDto.password() != null && !userRequestDto.password().isBlank()) {
             String encryptedPassword = new BCryptPasswordEncoder().encode(userRequestDto.password());
             userEntity.setPassword(encryptedPassword);
-            envServiceWindows.updateEnv(new EnvRequestDto("ENV_VAULT_PASS", encryptedPassword));
         }
+        
         userRepository.save(userEntity);
         return ResponseEntity.status(HttpStatus.OK).body(new MessageResponseDto("Usuário atualizado com sucesso."));
     }
@@ -77,6 +76,12 @@ public class UserService {
     private UserEntity checkUserId(UUID id) {
         Optional<UserEntity> user = userQueryRepositoy.findById(id);
         if(user.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Nenhum usuário com este ID cadastrado.");
+        return user.get();
+    }
+
+    private UserEntity findFirstUserOrThrow() {
+        Optional<UserEntity> user = userQueryRepositoy.findFirstBy();
+        if(user.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Usuário não encontrado");
         return user.get();
     }
 }

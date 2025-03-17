@@ -1,6 +1,5 @@
 package com.danielfreitassc.backend.controllers;
 
-import java.util.List;
 import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
@@ -26,8 +25,8 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
-    public List<UserResponseDTO> getAllUsers() {
-        return userService.getAll();
+    public UserResponseDTO getUser() {
+        return userService.getUser();
     }
 
     @GetMapping("/{id}")
@@ -35,8 +34,8 @@ public class UserController {
         return userService.getById(id);
     }
 
-    @PatchMapping("/{id}")
-    public ResponseEntity<MessageResponseDto> patchUser(@PathVariable UUID id, @RequestBody @Valid UserRequestDto userDTO) {
-        return userService.patchUser(id, userDTO);
+    @PatchMapping
+    public ResponseEntity<MessageResponseDto> patchUser(@RequestBody @Valid UserRequestDto userDTO) {
+        return userService.patchUser(userDTO);
     }
 }

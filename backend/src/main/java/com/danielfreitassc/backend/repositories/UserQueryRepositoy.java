@@ -9,4 +9,6 @@ import com.danielfreitassc.backend.models.UserEntity;
 
 public interface UserQueryRepositoy extends JpaRepository<UserEntity, UUID> {
     Optional<UserEntity> findByUsername(String username);
+    
+    Optional<UserEntity> findFirstBy();
 }

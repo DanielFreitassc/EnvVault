@@ -12,6 +12,8 @@ import org.springframework.web.server.ResponseStatusException;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
+import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.danielfreitassc.backend.models.UserEntity;
 
 @Service
@@ -29,22 +31,24 @@ public class TokenService {
                     .sign(algorithm);
             return token;
         } catch (JWTCreationException exception) {
-           throw new RuntimeException("Error while generating token", exception);
+           throw new RuntimeException("Erro ao gerar token", exception);
         }
     }
 
     public String validateToken(String token) {
         try {
-            Algorithm algorithm = Algorithm.HMAC256(secret);
-            return JWT.require(algorithm)
-                .withIssuer("auth-api")
-                .build()
-                .verify(token)
-                .getSubject();
-        } catch (JWTCreationException exception) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"Token inválido");
+                Algorithm algorithm = Algorithm.HMAC256(secret);
+                return JWT.require(algorithm)
+                    .withIssuer("auth-api")
+                    .build()
+                    .verify(token)
+                    .getSubject();
+            } catch (TokenExpiredException exception) {
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Token expirado");
+            } catch (JWTVerificationException exception) {
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Token inválido");
+            }
         }
-    }
 
     private Instant generateExpirationDate() {
         return LocalDateTime.now().plusHours(2).toInstant(ZoneOffset.of("-03:00"));
