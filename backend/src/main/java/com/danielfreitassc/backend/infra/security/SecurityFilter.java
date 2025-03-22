@@ -27,11 +27,19 @@ public class SecurityFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         try {
+            String path = request.getServletPath();
+            boolean isPublicEndpoint = (path.equals("/users") && request.getMethod().equals("POST")) || path.equals("/validation") || path.equals("/auth/login") && request.getMethod().equals("POST");
+
             var token = this.recoverToken(request);
+
+            // Se o token for nulo e o endpoint não exigir autenticação, apenas continue a requisição
             if (token == null) {
-                // Se o token for nulo, chame o CustomAuthenticationEntryPoint
-                customAuthenticationEntryPoint.commence(request, response, null);
-                return;
+            if (isPublicEndpoint) {
+                filterChain.doFilter(request, response);
+            } else {
+                customAuthenticationEntryPoint.commence(request, response, null); 
+            }
+            return;
             }
 
             var username = tokenService.validateToken(token);
