@@ -36,18 +36,13 @@ public class SecurityConfigurations {
                 .requestMatchers(HttpMethod.GET,"/users/{id}").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.PATCH,"/users").hasRole("ADMIN")
                 
-                .requestMatchers(HttpMethod.POST,"/env-windows").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.GET,"/env-windows").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.PUT,"/env-windows").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.DELETE,"/env-windows/{name}").hasRole("ADMIN")
-
-                .requestMatchers(HttpMethod.POST,"/env-linux").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.GET,"/env-linux").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.PUT,"/env-linux").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.DELETE,"/env-linux/{name}").hasRole("ADMIN")
-                
                 .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                 .requestMatchers(HttpMethod.GET,"/validation").permitAll()
+
+                .requestMatchers(HttpMethod.POST,"/env").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.GET,"/env").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PUT,"/env").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE,"/env/{name}").hasRole("ADMIN")
 
                 // Configuração para endpoint de erro
                 .requestMatchers("/error").anonymous()
