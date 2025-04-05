@@ -106,7 +106,9 @@ Status: 201 CREATED
 
 ### Listar Variáveis  
 **Endpoint:** `GET /env`
+
 OU  para uma pesquisa por nome
+
 **Endpoint:** `GET /env?search={NOME_VAR}`
 
 **Response:**
