@@ -69,7 +69,3 @@ Status: 200 OK
     "message": "Variável atualizada com sucesso"
 }
 ```
-
----
-
-Se quiser, também posso te mandar o código de como implementar esse roteamento automático no backend usando Spring. Deseja isso também?
