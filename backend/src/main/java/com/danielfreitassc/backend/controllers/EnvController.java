@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
@@ -23,6 +24,7 @@ import com.danielfreitassc.backend.services.EnvServiceWindows;
 import com.danielfreitassc.backend.services.SystemService;
 
 import jakarta.validation.Valid;
+import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -35,13 +37,13 @@ public class EnvController {
 
 
     @GetMapping
-    public List<EnvResponseDto> getEnvs() {
+    public List<EnvResponseDto> getEnvs(@PathParam(value = "search") String search) {
         
         String os = systemService.getOperatingSystem();
         if(os.equals("windows")) {
-            return envServiceWindows.getEnvs();
+            return envServiceWindows.getEnvs(search);
         } else if(os.equals("linux")) {
-            return envServiceLinux.getEnvs();
+            return envServiceLinux.getEnvs(search);
         }
 
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Sistema operacional não suportado");

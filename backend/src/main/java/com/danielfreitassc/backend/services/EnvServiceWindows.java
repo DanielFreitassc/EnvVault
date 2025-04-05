@@ -21,9 +21,14 @@ import com.danielfreitassc.backend.utils.ForbiddenWordsFilterWindows;
 public class EnvServiceWindows {
     private Map<String, String> envCache = new HashMap<>(System.getenv());
 
-    public List<EnvResponseDto> getEnvs() {
+    public List<EnvResponseDto> getEnvs(String search) {
         return envCache.keySet().stream()
             .filter(key -> !ForbiddenWordsFilterWindows.containsForbiddenWords(key))
+            .filter(key -> {
+                if (search == null || search.isEmpty()) return true;
+                return key.toLowerCase().contains(search.toLowerCase());
+            })
+            .sorted(String::compareToIgnoreCase)
             .map(EnvResponseDto::new)
             .collect(Collectors.toList());
     }
