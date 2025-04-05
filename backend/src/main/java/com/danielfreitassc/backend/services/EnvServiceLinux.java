@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.danielfreitassc.backend.dtos.EnvCreateDto;
 import com.danielfreitassc.backend.dtos.EnvRequestDto;
 import com.danielfreitassc.backend.dtos.EnvResponseDto;
 import com.danielfreitassc.backend.dtos.MessageResponseDto;
@@ -30,7 +31,7 @@ public class EnvServiceLinux {
             .collect(Collectors.toList());
     }
 
-    public MessageResponseDto addEnv(EnvRequestDto envRequestDto) {
+    public EnvCreateDto addEnv(EnvRequestDto envRequestDto) {
         if (envCache.containsKey(envRequestDto.name())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Erro: A variável de ambiente " + envRequestDto.name() + " já existe.");
         }
@@ -46,10 +47,10 @@ public class EnvServiceLinux {
             envCache.put(envRequestDto.name(), envRequestDto.value());
         } catch (IOException e) {
             e.printStackTrace();
-            return new MessageResponseDto("Erro ao adicionar a variável de ambiente: " + e.getMessage());
+            return new EnvCreateDto(envRequestDto.name(), "Erro ao adicionar a variável de ambiente: " + e.getMessage());
         }
 
-        return new MessageResponseDto("Variável de ambiente: " + envRequestDto.name() + " adicionada.");
+        return new EnvCreateDto(envRequestDto.name(), "Variável de ambiente: " + envRequestDto.name() + " adicionada.");
     }
 
     public MessageResponseDto updateEnv(EnvRequestDto envRequestDto) {
@@ -58,7 +59,8 @@ public class EnvServiceLinux {
         }
 
         deleteEnv(envRequestDto.name());
-        return addEnv(envRequestDto);
+        addEnv(envRequestDto);
+        return new MessageResponseDto("Variavel atualizada com sucesso");
     }
 
     public MessageResponseDto deleteEnv(String name) {

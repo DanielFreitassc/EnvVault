@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.danielfreitassc.backend.dtos.EnvCreateDto;
 import com.danielfreitassc.backend.dtos.EnvRequestDto;
 import com.danielfreitassc.backend.dtos.EnvResponseDto;
 import com.danielfreitassc.backend.dtos.MessageResponseDto;
@@ -34,7 +35,7 @@ public class EnvControllerLinux {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public MessageResponseDto addEnv(@RequestBody @Valid EnvRequestDto envRequestDto) {
+    public EnvCreateDto addEnv(@RequestBody @Valid EnvRequestDto envRequestDto) {
         return envServiceLinux.addEnv(envRequestDto);
     }
 
