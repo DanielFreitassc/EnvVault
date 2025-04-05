@@ -14,42 +14,54 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { TEnvs, useEnvsForm } from "@/hooks/form/useEnvsForm";
+import { TCreateEnvs, useCreateEnvsForm } from "@/hooks/form/useCreateEnvsForm";
 import { createEnv } from "@/services/envs/create-env";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 
 interface EnvsFormProps {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  envsData: TEnvs | undefined;
 }
 
-export default function EnvsFormDialog({
+export default function CreateEnvsFormDialog({
   isOpen,
   setIsOpen,
-  envsData,
 }: EnvsFormProps) {
-  const { methods } = useEnvsForm();
+  const { methods } = useCreateEnvsForm();
+  const queryClient = useQueryClient();
+  const isSubmitting = methods.formState.isSubmitting;
 
-  const handleFormSubmit = async (data: TEnvs) => {
-    console.log(data);
-    if (!envsData) {
-      await createEnv(data).then((res) => {
-        toast.success(res.message);
-        setIsOpen(false);
-      });
-    }
+  const handleClose = () => {
+    methods.reset();
+    setIsOpen(false);
+  };
+
+  const mutate = useMutation({
+    mutationKey: ["create-env"],
+    mutationFn: createEnv,
+    onSuccess: (data) => {
+      console.log(data.name);
+
+      queryClient.setQueryData(["all-envs"], (oldData: IEnv[]) => [
+        data,
+        ...oldData,
+      ]);
+
+      toast.success(data.message);
+      handleClose();
+    },
+  });
+
+  const handleFormSubmit = async (data: TCreateEnvs) => {
+    return mutate.mutateAsync(data);
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent className="bg-gray-900 text-gray-100 border-gray-800">
         <DialogHeader>
-          <DialogTitle>
-            {envsData
-              ? "Edit Environment Variable"
-              : "Create Environment Variable"}
-          </DialogTitle>
+          <DialogTitle>Criar variável de ambiente</DialogTitle>
         </DialogHeader>
         <Form {...methods}>
           <form
@@ -103,10 +115,16 @@ export default function EnvsFormDialog({
                 variant="outline"
                 onClick={() => setIsOpen(false)}
                 className="border-gray-700 hover:bg-gray-800 text-gray-300"
+                disabled={isSubmitting}
               >
                 Cancel
               </Button>
-              <Button className="bg-primary hover:bg-primary/90">Save</Button>
+              <Button
+                className="bg-primary hover:bg-primary/90"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "Criando..." : "Criar"}
+              </Button>
             </div>
           </form>
         </Form>

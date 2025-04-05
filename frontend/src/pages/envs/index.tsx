@@ -1,45 +1,41 @@
-import EnvsFormDialog from "@/components/Dialogs/envs";
+import CreateEnvsFormDialog from "@/components/Dialogs/envs/CreateEnvDialog";
+import EditEnvsFormDialog from "@/components/Dialogs/envs/EditEnvDialog";
+import Spinner from "@/components/Loading/Spinner";
+import { DeletePopover } from "@/components/Popover/DeletePopover";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { listAllEnvs } from "@/services/envs/list-all-envs";
 import { useQuery } from "@tanstack/react-query";
-import {
-  PencilIcon,
-  PlusIcon,
-  SearchIcon,
-  TrashIcon,
-  XIcon,
-} from "lucide-react";
-import { useState } from "react";
+import { PencilIcon, PlusIcon, SearchIcon, XIcon } from "lucide-react";
+import { useDeferredValue, useState } from "react";
+
+export interface IEnv {
+  name: string;
+}
 
 export default function EnvVariablesManager() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const deferredSearch = useDeferredValue(searchTerm);
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [selectedEnv, setSelectedEnv] = useState<IEnv | null>(null);
 
-  // const filteredVariables = envVariables.filter((env) =>
-  //   env.name.toLowerCase().includes(searchTerm.toLowerCase())
-  // );
-
-  // const handleDelete = (id: string) => {
-  //   setEnvVariables(envVariables.filter((env) => env.id !== id));
-  // };
-
-  const { data, isLoading } = useQuery({
-    queryKey: ["all-envs"],
-    queryFn: async () => listAllEnvs(),
-    staleTime: 5 * 60 * 1000, // 5 minutos (300.000 ms)
+  const { data = [], isLoading } = useQuery({
+    queryKey: ["all-envs", deferredSearch],
+    queryFn: async () => listAllEnvs({ search: deferredSearch }),
+    staleTime: 5 * 60 * 1000, // 5 minutos
   });
 
   return (
     <div className="container mx-auto px-4 py-8 text-gray-100">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Environment Variables</h1>
+        <h1 className="text-2xl font-bold">Variáveis de ambiente</h1>
         <Button
-          onClick={() => setIsDialogOpen(true)}
+          onClick={() => setIsCreateDialogOpen(true)}
           className="bg-primary hover:bg-primary/90"
         >
           <PlusIcon className="h-4 w-4 mr-2" />
-          Create New
+          Criar
         </Button>
       </div>
 
@@ -71,13 +67,14 @@ export default function EnvVariablesManager() {
               <tr className="bg-gray-800 text-left">
                 <th className="px-6 py-3 text-gray-300 font-medium">Name</th>
                 <th className="px-6 py-3 text-gray-300 font-medium text-right">
-                  Actions
+                  Ações
                 </th>
               </tr>
             </thead>
+
             <tbody className="divide-y divide-gray-800">
-              {data ? (
-                data?.map(({ name }, i) => (
+              {!isLoading &&
+                data.map(({ name }, i) => (
                   <tr key={i} className="hover:bg-gray-800/50">
                     <td className="px-6 py-4 font-mono">{name}</td>
                     <td className="px-6 py-4 text-right">
@@ -85,26 +82,21 @@ export default function EnvVariablesManager() {
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => setIsDialogOpen(true)}
+                          onClick={() => {
+                            setSelectedEnv({ name });
+                            setIsEditDialogOpen(true);
+                          }}
                           className="border-gray-700 hover:bg-gray-800 text-gray-300"
                         >
                           <PencilIcon className="h-4 w-4" />
                           <span className="sr-only">Edit</span>
                         </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          // onClick={() => handleDelete(name)}
-                          className="border-gray-700 hover:bg-gray-800 text-gray-300"
-                        >
-                          <TrashIcon className="h-4 w-4" />
-                          <span className="sr-only">Delete</span>
-                        </Button>
+                        <DeletePopover name={name} />
                       </div>
                     </td>
                   </tr>
-                ))
-              ) : (
+                ))}
+              {!isLoading && (!data || data.length === 0) && (
                 <tr>
                   <td
                     colSpan={2}
@@ -118,13 +110,24 @@ export default function EnvVariablesManager() {
               )}
             </tbody>
           </table>
+          {isLoading && (
+            <div className="w-full flex justify-center">
+              <Spinner />
+            </div>
+          )}
         </div>
       </div>
-      <EnvsFormDialog
-        envsData={undefined}
-        isOpen={isDialogOpen}
-        setIsOpen={setIsDialogOpen}
+      <CreateEnvsFormDialog
+        isOpen={isCreateDialogOpen}
+        setIsOpen={setIsCreateDialogOpen}
       />
+      {selectedEnv && (
+        <EditEnvsFormDialog
+          isOpen={isEditDialogOpen}
+          setIsOpen={setIsEditDialogOpen}
+          envsData={selectedEnv}
+        />
+      )}
     </div>
   );
 }
