@@ -18,6 +18,7 @@
 ```json
 Status: 201 CREATED
 {
+    "name": "ENV_VAULT_PASS",
     "message": "Variável de ambiente: ENV_VAULT_PASS adicionada."
 }
 ```
