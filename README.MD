@@ -1,4 +1,83 @@
-## ✅ Atualização da Documentação da API
+# Documentação da API
+
+## Base URL
+```
+http://localhost:8080
+```
+
+## Autenticação
+### Login
+**Endpoint:** `POST /auth/login`
+
+**Payload esperado:**
+```json
+{
+    "username": "admin",
+    "password": "admin"
+}
+```
+
+**Response:**
+```json
+Status: 201 Created
+{
+    "token": "eyJhbGci0....."
+}
+```
+
+### Validação do Token
+**Endpoint:** `GET /validation`
+
+**Response:**
+```json
+Status: 200 OK
+{
+    "message": "Autorizado",
+    "role": "ADMIN"
+}
+```
+
+---
+
+## Gerenciamento de Usuários
+
+### Atualizar Usuário
+**Endpoint:** `PATCH /user`
+
+**Payload esperado:**
+```json
+{
+    "username": "admin",
+    "password": "SenhaAtualizada"
+}
+```
+
+**Response:**
+```json
+Status: 200 OK
+{
+    "message": "Usuário atualizado com sucesso."
+}
+```
+
+### Ver usuário cadastrado
+**Endpoint:** `GET /users`
+
+**Response:**
+```json
+Status: 200 OK
+
+{
+    "id": "30e21fdb-788b-494f-bfa3-b8836a9f6a06",
+    "name": "Admin",
+    "username": "admin",
+    "role": "ADMIN",
+    "createdAt": "20/02/2025"
+}
+
+```
+
+---
 
 ## Gerenciamento de Variáveis de Ambiente (Automático: Linux ou Windows)
 
