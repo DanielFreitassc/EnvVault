@@ -7,20 +7,26 @@ import {
 import { deleteEnv } from "@/services/envs/delete-env";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { TrashIcon } from "lucide-react";
+import { useRouter } from "next/router";
 import { useState } from "react";
 import { toast } from "react-toastify";
 
 export const DeletePopover = ({ name }: { name: string }) => {
   const queryClient = useQueryClient();
+  const router = useRouter();
+  const query = router.query as { search: string };
   const [isOpen, setIsOpen] = useState(false);
 
   const mutation = useMutation({
     mutationKey: ["delete-env"],
     mutationFn: deleteEnv,
     onSuccess: (data) => {
-      queryClient.setQueryData(["all-envs"], (oldData: IEnv[]) => {
-        return oldData.filter((env) => env.name !== name);
-      });
+      queryClient.setQueryData(
+        ["all-envs", query.search || ""],
+        (oldData: IEnv[]) => {
+          return oldData.filter((env) => env.name !== name);
+        }
+      );
       toast.success(data.message);
       setIsOpen(false);
     },

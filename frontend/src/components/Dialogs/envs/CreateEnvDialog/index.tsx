@@ -17,6 +17,7 @@ import { Input } from "@/components/ui/input";
 import { TCreateEnvs, useCreateEnvsForm } from "@/hooks/form/useCreateEnvsForm";
 import { createEnv } from "@/services/envs/create-env";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/router";
 import { toast } from "react-toastify";
 
 interface EnvsFormProps {
@@ -30,23 +31,26 @@ export default function CreateEnvsFormDialog({
 }: EnvsFormProps) {
   const { methods } = useCreateEnvsForm();
   const queryClient = useQueryClient();
+  const router = useRouter();
+  const query = router.query as { search: string };
   const isSubmitting = methods.formState.isSubmitting;
 
   const handleClose = () => {
     methods.reset();
     setIsOpen(false);
   };
+  console.log(query.search);
 
   const mutate = useMutation({
     mutationKey: ["create-env"],
     mutationFn: createEnv,
     onSuccess: (data) => {
-      console.log(data.name);
-
-      queryClient.setQueryData(["all-envs"], (oldData: IEnv[]) => [
-        data,
-        ...oldData,
-      ]);
+      if (!query.search || query.search?.includes(data.name)) {
+        queryClient.setQueryData(
+          ["all-envs", query.search || ""],
+          (oldData: IEnv[]) => [data, ...oldData]
+        );
+      }
 
       toast.success(data.message);
       handleClose();

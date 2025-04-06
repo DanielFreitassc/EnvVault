@@ -7,7 +7,8 @@ import { Input } from "@/components/ui/input";
 import { listAllEnvs } from "@/services/envs/list-all-envs";
 import { useQuery } from "@tanstack/react-query";
 import { PencilIcon, PlusIcon, SearchIcon, XIcon } from "lucide-react";
-import { useDeferredValue, useState } from "react";
+import { useRouter } from "next/router";
+import { useDeferredValue, useEffect, useState } from "react";
 
 export interface IEnv {
   name: string;
@@ -16,6 +17,7 @@ export interface IEnv {
 export default function EnvVariablesManager() {
   const [searchTerm, setSearchTerm] = useState("");
   const deferredSearch = useDeferredValue(searchTerm);
+  const router = useRouter();
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [selectedEnv, setSelectedEnv] = useState<IEnv | null>(null);
@@ -25,6 +27,14 @@ export default function EnvVariablesManager() {
     queryFn: async () => listAllEnvs({ search: deferredSearch }),
     staleTime: 5 * 60 * 1000, // 5 minutos
   });
+
+  useEffect(() => {
+    router.push({
+      query: {
+        search: deferredSearch,
+      },
+    });
+  }, [deferredSearch]);
 
   return (
     <div className="container mx-auto px-4 py-8 text-gray-100">
@@ -103,8 +113,8 @@ export default function EnvVariablesManager() {
                     className="px-6 py-8 text-center text-gray-500"
                   >
                     {searchTerm
-                      ? "No environment variables found matching your search."
-                      : "No environment variables found. Create one to get started."}
+                      ? "Nenhuma variável de ambiente encontrada que corresponda à sua busca."
+                      : "Nenhuma variável de ambiente encontrada. Crie uma para começar."}
                   </td>
                 </tr>
               )}
