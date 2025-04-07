@@ -18,7 +18,6 @@ import com.danielfreitassc.backend.dtos.EnvRequestDto;
 import com.danielfreitassc.backend.dtos.EnvResponseDto;
 import com.danielfreitassc.backend.dtos.MessageResponseDto;
 import com.danielfreitassc.backend.utils.ForbiddenWordsFilterLinux;
-import com.danielfreitassc.backend.utils.ForbiddenWordsFilterWindows;
 
 @Service
 public class EnvServiceLinux {
@@ -27,7 +26,7 @@ public class EnvServiceLinux {
 
     public List<EnvResponseDto> getEnvs(String search) {
         return envCache.keySet().stream()
-            .filter(key -> !ForbiddenWordsFilterWindows.containsForbiddenWords(key))
+            .filter(key -> !ForbiddenWordsFilterLinux.containsForbiddenWords(key))
             .filter(key -> {
                 if (search == null || search.isEmpty()) return true;
                 return key.toLowerCase().contains(search.toLowerCase());
