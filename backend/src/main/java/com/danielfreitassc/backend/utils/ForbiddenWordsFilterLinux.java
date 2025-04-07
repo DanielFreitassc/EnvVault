@@ -22,8 +22,6 @@ public class ForbiddenWordsFilterLinux {
         "QT_IM_MODULE", "SSH_AGENT_LAUNCHER", "TERM_PROGRAM", "TERM_PROGRAM_VERSION",
         "XDG_CONFIG_DIRS", "XDG_DATA_DIRS", "XDG_MENU_PREFIX", "XDG_SESSION_CLASS",
         "XDG_SESSION_DESKTOP"
-
-
     ).stream().map(String::toUpperCase).collect(Collectors.toSet()));
 
     public static boolean containsForbiddenWords(String value) {
