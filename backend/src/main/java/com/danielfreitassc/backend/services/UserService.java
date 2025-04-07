@@ -65,6 +65,7 @@ public class UserService {
             userEntity.setRole(userRequestDto.role());
         }
         if (userRequestDto.password() != null && !userRequestDto.password().isBlank()) {
+            userEntity.setActivate(true);
             String encryptedPassword = new BCryptPasswordEncoder().encode(userRequestDto.password());
             userEntity.setPassword(encryptedPassword);
         }

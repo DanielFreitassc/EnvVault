@@ -12,6 +12,8 @@ public record UserRequestDto(
 
     @NotBlank(groups = OnCreate.class, message = "Username não pode ser um campo em branco") 
     String username,
+
+    Boolean activate,
     
     @NotBlank(groups = OnCreate.class, message = "Senha não pode ser um campo em branco") 
     String password,

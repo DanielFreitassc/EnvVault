@@ -42,7 +42,7 @@ public class UserEntity implements UserDetails{
     private UUID id;
     private String name;
     private String username;
-
+    private Boolean activate;
     @DateTimeFormat(pattern = "dd/MM/yyyy")
     @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate createdAt;
@@ -76,9 +76,10 @@ public class UserEntity implements UserDetails{
         return LocalDateTime.now().isBefore(this.lockoutExpiration);
     }
 
-    public UserEntity(String name, String username, String password, UserRole role) {
+    public UserEntity(String name, String username, Boolean activate,String password, UserRole role) {
         this.name = name;
         this.username = username;
+        this.activate = activate;
         this.password = password;
         this.role = role;
     }

@@ -31,7 +31,7 @@ public class AdminUserInitializer {
             userService.getByUsername(adminUsername);
         } catch (ResponseStatusException e) {
             if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
-                UserRequestDto adminUserDTO = new UserRequestDto("Admin", adminUsername, adminPassword, UserRole.ADMIN);
+                UserRequestDto adminUserDTO = new UserRequestDto("Admin", adminUsername, Boolean.FALSE, adminPassword, UserRole.ADMIN);
                 userService.create(adminUserDTO);
             }
         }
