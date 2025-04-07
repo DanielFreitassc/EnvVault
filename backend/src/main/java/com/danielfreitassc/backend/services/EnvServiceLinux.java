@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.danielfreitassc.backend.dtos.EnvCreateDto;
+import com.danielfreitassc.backend.dtos.EnvDeleteDto;
 import com.danielfreitassc.backend.dtos.EnvRequestDto;
 import com.danielfreitassc.backend.dtos.EnvResponseDto;
 import com.danielfreitassc.backend.dtos.MessageResponseDto;
@@ -68,7 +69,7 @@ public class EnvServiceLinux {
         return new MessageResponseDto("Variavel atualizada com sucesso");
     }
 
-    public MessageResponseDto deleteEnv(String name) {
+    public EnvDeleteDto deleteEnv(String name) {
         if (ForbiddenWordsFilterLinux.containsForbiddenWords(name)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Erro: O nome da variável '" + name + "' é proibido, pois é utilizado pelo sistema operacional.");
         }
@@ -85,6 +86,6 @@ public class EnvServiceLinux {
             e.printStackTrace();
         }
 
-        return new MessageResponseDto("Variável de ambiente: " + name + " removida.");
+        return new EnvDeleteDto(name, "Variável de ambiente: " + name + " removida.");
     }
 }

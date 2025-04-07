@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.danielfreitassc.backend.dtos.EnvCreateDto;
+import com.danielfreitassc.backend.dtos.EnvDeleteDto;
 import com.danielfreitassc.backend.dtos.EnvRequestDto;
 import com.danielfreitassc.backend.dtos.EnvResponseDto;
 import com.danielfreitassc.backend.dtos.MessageResponseDto;
@@ -64,7 +65,7 @@ public class EnvController {
     }
 
     @DeleteMapping("/{name}")
-    public MessageResponseDto deleteEnv(@PathVariable String name) {
+    public EnvDeleteDto deleteEnv(@PathVariable String name) {
         String os = systemService.getOperatingSystem();
         if(os.equals("windows")) {
             return envServiceWindows.deleteEnv(name);
