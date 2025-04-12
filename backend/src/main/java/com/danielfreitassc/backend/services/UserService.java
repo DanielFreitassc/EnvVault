@@ -65,13 +65,18 @@ public class UserService {
             userEntity.setRole(userRequestDto.role());
         }
         if (userRequestDto.password() != null && !userRequestDto.password().isBlank()) {
-            userEntity.setActivate(true);
             String encryptedPassword = new BCryptPasswordEncoder().encode(userRequestDto.password());
             userEntity.setPassword(encryptedPassword);
         }
         
         userRepository.save(userEntity);
         return ResponseEntity.status(HttpStatus.OK).body(new MessageResponseDto("Usuário atualizado com sucesso."));
+    }
+
+    public void activateAccount() {
+        UserEntity userEntity = findFirstUserOrThrow();
+        userEntity.setActivate(Boolean.TRUE);
+        userRepository.save(userEntity);
     }
     
     private UserEntity checkUserId(UUID id) {

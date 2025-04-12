@@ -34,6 +34,11 @@ public class UserController {
         return userService.getById(id);
     }
 
+    @GetMapping("/activate")
+    public void activateAccount() {
+        userService.activateAccount();
+    }
+
     @PatchMapping
     public ResponseEntity<MessageResponseDto> patchUser(@RequestBody @Valid UserRequestDto userDTO) {
         return userService.patchUser(userDTO);
