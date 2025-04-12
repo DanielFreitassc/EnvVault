@@ -42,7 +42,7 @@ Status: 200 OK
 ## Gerenciamento de Usuários
 
 ### Atualizar Usuário
-**Endpoint:** `PATCH /user`
+**Endpoint:** `PATCH /users`
 
 **Payload esperado:**
 ```json
@@ -76,6 +76,16 @@ Status: 200 OK
 }
 
 ```
+
+### Ativar conta do usuário para indicar que ele viu a recomendação de troca de senha
+**Endpoint:** `GET /users/activate`
+
+**Response:**
+```json
+Status: 200 OK
+```
+
+
 
 ---
 
