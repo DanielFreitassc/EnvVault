@@ -19,20 +19,42 @@ import { Input } from "@/components/ui/input";
 import { useAuthContext } from "@/context/auth/useAuthContext";
 import { TLoginForm, useLoginForm } from "@/hooks/form/useLoginForm";
 import { LockIcon, UserIcon } from "lucide-react";
+import ChangeInitialPasswordFormDialog from "@/components/Dialogs/ChangePassword";
+import { useState } from "react";
+import { activateUser } from "@/services/auth/activate-user";
 
 export default function Login() {
   const { methods } = useLoginForm();
   const { signIn } = useAuthContext();
   const { push } = useRouter();
 
+  const [isChangePasswordDialogOpen, setIsChangePasswordDialogOpen] =
+    useState(false);
+
   const handleLogin = async (data: TLoginForm) => {
-    await signIn(data).then(() => {
-      push("/envs");
-    });
+    const decoded = await signIn(data);
+
+    console.log(decoded);
+
+    if (!decoded?.activate) {
+      console.log(decoded);
+
+      setIsChangePasswordDialogOpen(true);
+      await activateUser();
+      return;
+    }
+    push("/envs");
   };
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-gray-950 p-4">
+      <ChangeInitialPasswordFormDialog
+        isOpen={isChangePasswordDialogOpen}
+        setIsOpen={setIsChangePasswordDialogOpen}
+        action={() => {
+          push("/envs");
+        }}
+      />
       <Card className="w-full max-w-md border-gray-800 bg-gray-900 text-gray-100">
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold text-center">

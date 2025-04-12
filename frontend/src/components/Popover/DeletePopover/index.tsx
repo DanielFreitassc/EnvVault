@@ -7,26 +7,18 @@ import {
 import { deleteEnv } from "@/services/envs/delete-env";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { TrashIcon } from "lucide-react";
-import { useRouter } from "next/router";
 import { useState } from "react";
 import { toast } from "react-toastify";
 
 export const DeletePopover = ({ name }: { name: string }) => {
   const queryClient = useQueryClient();
-  const router = useRouter();
-  const query = router.query as { search: string };
   const [isOpen, setIsOpen] = useState(false);
 
   const mutation = useMutation({
     mutationKey: ["delete-env"],
     mutationFn: deleteEnv,
     onSuccess: (data) => {
-      queryClient.setQueryData(
-        ["all-envs", query.search || ""],
-        (oldData: IEnv[]) => {
-          return oldData.filter((env) => env.name !== name);
-        }
-      );
+      queryClient.invalidateQueries({ queryKey: ["all-envs"] });
       toast.success(data.message);
       setIsOpen(false);
     },
@@ -38,9 +30,9 @@ export const DeletePopover = ({ name }: { name: string }) => {
         <Button
           variant="outline"
           size="sm"
-          className="border-gray-700 hover:bg-gray-800 text-gray-300"
+          className="border-gray-700 hover:bg-gray-800 text-gray-300 transition-colors duration-300"
         >
-          <TrashIcon className="h-4 w-4" />
+          <TrashIcon className="h-4 w-4 text-red-600" />
           <span className="sr-only">Delete</span>
         </Button>
       </PopoverTrigger>

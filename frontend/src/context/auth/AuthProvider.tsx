@@ -33,14 +33,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const signOut = () => {
-    destroyCookie(null, "animedex.token");
+    destroyCookie(null, "token");
     push("/login");
   };
 
   useEffect(() => {
     if (!user) {
       const decodedToken = jwt.decode(token) as IDecodedToken;
-      console.log(decodedToken);
 
       setUser(decodedToken);
     }

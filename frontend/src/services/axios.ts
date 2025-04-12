@@ -1,4 +1,5 @@
 import axios from "axios";
+import { redirect } from "next/navigation";
 import { parseCookies, destroyCookie } from "nookies";
 import { toast } from "react-toastify";
 
@@ -28,7 +29,7 @@ api.interceptors.response.use(
 
     if (res.response.status === 403) {
       destroyCookie(null, "token");
-      window.location.href = "/login";
+      redirect("/login");
     }
 
     return Promise.reject(res);

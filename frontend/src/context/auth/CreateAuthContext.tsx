@@ -2,9 +2,7 @@ import { JwtPayload } from "jsonwebtoken";
 import { createContext } from "react";
 
 export interface IDecodedToken extends JwtPayload {
-  id: number;
-  username: string;
-  photo: string;
+  activate: boolean | null;
 }
 
 export interface IAuthContext {

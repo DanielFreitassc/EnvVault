@@ -86,15 +86,15 @@ export default function EditEnvsFormDialog({
             <div className="w-full flex justify-end gap-5">
               <Button
                 type="button"
-                variant="outline"
+                variant="link"
                 onClick={() => setIsOpen(false)}
-                className="border-gray-700 hover:bg-gray-800 text-gray-300"
+                className="text-red-600"
                 disabled={isSubmitting}
               >
-                Cancel
+                Cancelar
               </Button>
               <Button
-                className="bg-primary hover:bg-primary/90"
+                className="bg-black hover:bg-black/60 transition-colors duration-300"
                 disabled={isSubmitting}
               >
                 {isSubmitting ? "Editando..." : "Editar"}

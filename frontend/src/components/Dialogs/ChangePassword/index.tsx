@@ -14,58 +14,88 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { TCreateEnvs, useCreateEnvsForm } from "@/hooks/form/useCreateEnvsForm";
-import { createEnv } from "@/services/envs/create-env";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "next/router";
+import { changePassword } from "@/services/auth/change-password";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
+import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
+import { z } from "zod";
 
-interface EnvsFormProps {
+interface IChangePasswordFormProps {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  action?: VoidFunction;
 }
 
-export default function CreateEnvsFormDialog({
+const schema = z
+  .object({
+    password: z.string().min(1, "Campo obrigatório"),
+    confirmPassword: z.string().min(1, "Campo obrigatório"),
+  })
+  .superRefine((val, ctx) => {
+    if (val.password !== val.confirmPassword) {
+      ctx.addIssue({
+        code: "custom",
+        message: "Os campos precisam ser iguais!",
+        path: ["confirmPassword"],
+      });
+    }
+  });
+
+type TFormData = z.infer<typeof schema>;
+
+export default function ChangeInitialPasswordFormDialog({
   isOpen,
   setIsOpen,
-}: EnvsFormProps) {
-  const { methods } = useCreateEnvsForm();
-  const queryClient = useQueryClient();
-  const router = useRouter();
-  const query = router.query as { search: string };
+  action,
+}: IChangePasswordFormProps) {
+  const methods = useForm<TFormData>({
+    resolver: zodResolver(schema),
+    defaultValues: {
+      confirmPassword: "",
+      password: "",
+    },
+  });
   const isSubmitting = methods.formState.isSubmitting;
 
   const handleClose = () => {
     methods.reset();
     setIsOpen(false);
+    if (action) action();
   };
 
   const mutate = useMutation({
-    mutationKey: ["create-env"],
-    mutationFn: createEnv,
+    mutationKey: ["change-password"],
+    mutationFn: (password: string) => changePassword({ password }),
     onSuccess: (data) => {
-      if (!query.search || query.search?.includes(data.name)) {
-        queryClient.setQueryData(
-          ["all-envs", query.search || ""],
-          (oldData: IEnv[]) => [data, ...oldData]
-        );
-      }
-
       toast.success(data.message);
+      if (action) action();
+
       handleClose();
     },
   });
 
-  const handleFormSubmit = async (data: TCreateEnvs) => {
-    return mutate.mutateAsync(data);
+  const handleFormSubmit = async (data: TFormData) => {
+    return mutate.mutateAsync(data.password);
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+    <Dialog
+      open={isOpen}
+      onOpenChange={(isOpen) => {
+        if (isOpen) return;
+        handleClose();
+      }}
+    >
       <DialogContent className="bg-gray-900 text-gray-100 border-gray-800">
         <DialogHeader>
-          <DialogTitle>Criar variável de ambiente</DialogTitle>
+          <DialogTitle>Trocar senha inicial</DialogTitle>
         </DialogHeader>
+        <p className="text-sm">
+          Sua senha atual é a padrão do sistema e pode ser facilmente
+          descoberta. Para proteger sua conta e seus dados, altere-a o quanto
+          antes. Manter a senha padrão compromete sua segurança.
+        </p>
         <Form {...methods}>
           <form
             className="space-y-4 py-4"
@@ -73,16 +103,17 @@ export default function CreateEnvsFormDialog({
           >
             <div className="space-y-2">
               <FormField
-                name="name"
+                name="password"
                 control={methods.control}
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Nome</FormLabel>
+                    <FormLabel>Nova senha:</FormLabel>
                     <FormControl>
                       <Input
                         {...field}
-                        id="name"
-                        placeholder="NEXT_PUBLIC_API_URL"
+                        id="password"
+                        placeholder="Insira sua nova senha"
+                        type="password"
                         className="bg-gray-800 border-gray-700 text-gray-100"
                       />
                     </FormControl>
@@ -91,19 +122,19 @@ export default function CreateEnvsFormDialog({
                 )}
               />
             </div>
-
             <div className="space-y-2">
               <FormField
-                name="value"
+                name="confirmPassword"
                 control={methods.control}
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Valor</FormLabel>
+                    <FormLabel>Confirmar nova senha:</FormLabel>
                     <FormControl>
                       <Input
                         {...field}
-                        id="value"
-                        placeholder="https://api.example.com"
+                        id="confirmPassword"
+                        placeholder="Confirme sua nova senha"
+                        type="password"
                         className="bg-gray-800 border-gray-700 text-gray-100"
                       />
                     </FormControl>
@@ -116,7 +147,7 @@ export default function CreateEnvsFormDialog({
               <Button
                 type="button"
                 variant="link"
-                onClick={() => setIsOpen(false)}
+                onClick={handleClose}
                 className="text-red-600"
                 disabled={isSubmitting}
               >
@@ -126,7 +157,7 @@ export default function CreateEnvsFormDialog({
                 className="bg-black hover:bg-black/60 transition-colors duration-300"
                 disabled={isSubmitting}
               >
-                {isSubmitting ? "Criando..." : "Criar"}
+                {isSubmitting ? "Trocando..." : "Trocar"}
               </Button>
             </div>
           </form>
