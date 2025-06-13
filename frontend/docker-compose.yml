@@ -1,0 +1,30 @@
+services:
+  next:
+    container_name: next
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - NODE_ENV=production
+    networks:
+      - app-network
+
+  nginx:
+    container_name: nginx
+    image: nginx:1.27.4
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ./nginx:/etc/nginx
+      - ./cert:/cert
+    ports:
+      - "7777:443"
+    depends_on:
+      - next
+    networks:
+      - app-network
+
+
+networks:
+  app-network:
+    driver: bridge
