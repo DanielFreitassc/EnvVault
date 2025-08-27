@@ -4,6 +4,7 @@ GlusterFS: sistema de arquivos de armazenamento conectado à rede que lhe permit
 Objetivos: criar uma matriz de armazenamento em clusters redundante, também conhecida como um sistema de arquivos distribuído ou, como ela está referida na documentação do GlusterFS, uma Trusted Storage Pool (pool de armazenamento confiável). Isso irá proporcionar funcionalidades semelhantes a uma configuração RAID espelhada pela rede: cada servidor independente irá conter sua própria cópia dos dados, permitindo que suas aplicações acessem qualquer cópia, ajudando assim a distribuir sua carga de leitura.
  
 Identificação e atribuição de cada maquina virtual:
+
 ```
 nano /etc/hostname
 ```
@@ -12,7 +13,7 @@ gluster1 Servidor
 gluster2 Cliente
 
 
-``` 
+
 ``` 
 sudo nano /etc/hosts
 ``` 
